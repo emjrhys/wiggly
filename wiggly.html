@@ -1,0 +1,72 @@
+<html>
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+      font-size: 3em;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      text-align: center;
+    }
+
+    li {
+      display: inline-block;
+      margin-right: 2px;
+    }
+  </style>
+</head>
+<body>
+  <input type='text' id='text' />
+  <ul id='list'>
+  </ul>
+  <script src='jquery.min.js'></script>
+  <script>
+    /* color cycle code adapted from https://krazydad.com/tutorials/makecolors.php */
+    var t = 0,
+        r = 6,
+        pos_offset = 2,
+        color_offset = 4
+
+    function RGB2Color(r,g,b)
+    {
+      return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
+    }
+
+    function byte2Hex(n)
+    {
+      var nybHexString = "0123456789ABCDEF";
+      return String(nybHexString.substr((n >> 4) & 0x0F,1)) + nybHexString.substr(n & 0x0F,1);
+    }
+
+    function step() {
+      t += 0.05
+      $('#list li').each(function(idx) {
+        var left  = Math.floor((r * Math.cos(t + idx/pos_offset))),
+            top   = Math.floor((r * Math.sin(t + idx/pos_offset))),
+            red   = Math.sin(t + 0 + idx/color_offset) * 127 + 128,
+            green = Math.sin(t + 2 + idx/color_offset) * 127 + 128,
+            blue  = Math.sin(t + 4 + idx/color_offset) * 127 + 128
+
+        $(this).css({ transform: 'translate(' + left + 'px, ' + top + 'px)', color: RGB2Color(red, green, blue) })
+      })
+    }
+
+    $('#text').on('input', function() {
+      var chars = $(this).val().split('')
+      $('#list').html('')
+
+      $.each(chars, function(idx, val) {
+        var $li = $('<li>')
+        $li.text(val)
+
+        $('#list').append($li)
+      })
+    })
+
+    setInterval(step, 10)
+  </script>
+</body>
+</html>
